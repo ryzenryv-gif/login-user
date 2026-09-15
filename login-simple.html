@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nirmala — Masuk & Daftar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /*
+    Skema 60 / 30 / 10
+    60% — #F5F3EF  (latar, dominan)
+    30% — #2B2A33  (teks & panel gelap)
+    10% — #C4634C  (aksen: tombol, tab aktif, fokus)
+  */
+  :root{
+    --base: #F5F3EF;
+    --base-2: #EAE7E0;
+    --ink: #2B2A33;
+    --ink-dim: #6F6C79;
+    --accent: #C4634C;
+    --accent-soft: rgba(196,99,76,0.10);
+    --border: #DEDAD2;
+  }
+
+  *{ box-sizing: border-box; }
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background: var(--base);
+    color: var(--ink);
+    font-family: 'Manrope', sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 24px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
+
+  .card{
+    width:100%;
+    max-width: 400px;
+    background: #FFFFFF;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 40px 36px;
+  }
+
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    margin-bottom: 30px;
+  }
+  .brand-mark{
+    width:28px; height:28px; border-radius:8px;
+    background: var(--ink);
+    color: var(--base);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces', serif; font-weight:700; font-size:0.95rem;
+  }
+  .brand span{ font-weight:700; font-size:1rem; }
+
+  .switcher{
+    display:flex;
+    background: var(--base-2);
+    border-radius: 10px;
+    padding: 3px;
+    margin-bottom: 28px;
+  }
+  .switcher button{
+    flex:1;
+    padding: 9px 0;
+    border:none;
+    background:transparent;
+    color: var(--ink-dim);
+    font-family:'Manrope', sans-serif;
+    font-weight:700;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    cursor:pointer;
+    transition: background .15s ease, color .15s ease;
+  }
+  .switcher button.active{
+    background: #FFFFFF;
+    color: var(--ink);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  }
+
+  .view{ display:none; }
+  .view.active{ display:block; animation: rise .3s ease; }
+  @keyframes rise{ from{ opacity:0; transform: translateY(6px);} to{ opacity:1; transform:none; } }
+
+  .view h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size: 1.4rem;
+    margin: 0 0 4px;
+  }
+  .view p.sub{
+    color: var(--ink-dim);
+    font-size: 0.86rem;
+    margin: 0 0 26px;
+  }
+
+  .field{ margin-bottom: 16px; }
+  .field label{
+    display:block;
+    font-size: 0.78rem;
+    font-weight:700;
+    color: var(--ink-dim);
+    margin-bottom: 6px;
+  }
+  .field input{
+    width:100%;
+    padding: 11px 13px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--base);
+    color: var(--ink);
+    font-family:'Manrope', sans-serif;
+    font-size: 0.92rem;
+    outline: none;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .field input::placeholder{ color: #A6A2AD; }
+  .field input:focus{
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .field.error input{ border-color: #C0392B; }
+  .field .msg{ font-size: 0.74rem; color: #C0392B; margin-top: 5px; min-height: 1em; }
+
+  .row-between{
+    display:flex; align-items:center; justify-content:space-between;
+    margin: 2px 0 22px;
+    font-size: 0.8rem;
+    color: var(--ink-dim);
+  }
+  .row-between a{ color: var(--accent); text-decoration:none; font-weight:600; }
+  .checkline{ display:flex; align-items:center; gap:7px; }
+  .checkline input{ accent-color: var(--accent); }
+
+  .submit{
+    width:100%;
+    padding: 12px 0;
+    border:none;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #FFFFFF;
+    font-family:'Manrope', sans-serif;
+    font-weight:700;
+    font-size: 0.92rem;
+    cursor:pointer;
+    transition: opacity .15s ease;
+  }
+  .submit:hover{ opacity: 0.9; }
+
+  .foot-switch{
+    text-align:center;
+    margin-top: 20px;
+    font-size: 0.84rem;
+    color: var(--ink-dim);
+  }
+  .foot-switch button{
+    background:none; border:none; color: var(--accent);
+    font-weight:700; cursor:pointer; font-size:inherit; font-family:inherit;
+  }
+
+  /* ---------- DASHBOARD sederhana ---------- */
+  #dashboard{ display:none; }
+  #dashboard.active{ display:block; }
+
+  .db-head{ display:flex; align-items:center; gap:12px; margin-bottom: 22px; }
+  .avatar{
+    width:44px; height:44px; border-radius:12px;
+    background: var(--ink);
+    color: var(--base);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces', serif; font-weight:700; font-size:1.05rem;
+    flex-shrink:0;
+  }
+  .db-head h1{ margin:0 0 2px; font-family:'Fraunces', serif; font-weight:600; font-size:1.15rem; }
+  .db-head p{ margin:0; color: var(--ink-dim); font-size:0.82rem; }
+
+  .db-cards{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 22px; }
+  .db-card{
+    background: var(--base);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .db-card b{ display:block; font-family:'Fraunces', serif; font-size:1.2rem; margin-bottom:2px; color: var(--ink); }
+  .db-card span{ color: var(--ink-dim); font-size:0.76rem; }
+  .db-card.accent b{ color: var(--accent); }
+
+  .logout{
+    width:100%;
+    padding: 11px 0;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--ink);
+    font-weight:700;
+    font-size:0.88rem;
+    cursor:pointer;
+  }
+  .logout:hover{ border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="card" id="card">
+
+  <div class="brand"><span class="brand-mark">N</span><span>Nirmala</span></div>
+
+  <!-- AUTH -->
+  <div id="authPanel">
+    <div class="switcher">
+      <button id="tabLogin" class="active" onclick="switchView('login')">Masuk</button>
+      <button id="tabRegister" onclick="switchView('register')">Daftar</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="view active" id="loginView">
+      <h1>Selamat datang kembali</h1>
+      <p class="sub">Masukkan detail akunmu untuk masuk.</p>
+
+      <form onsubmit="return handleLogin(event)">
+        <div class="field" id="loginEmailField">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" placeholder="nama@email.com">
+          <div class="msg"></div>
+        </div>
+        <div class="field" id="loginPassField">
+          <label for="loginPass">Kata sandi</label>
+          <input type="password" id="loginPass" placeholder="••••••••">
+          <div class="msg"></div>
+        </div>
+
+        <div class="row-between">
+          <label class="checkline"><input type="checkbox"> Ingat saya</label>
+          <a href="#" onclick="return false;">Lupa sandi?</a>
+        </div>
+
+        <button type="submit" class="submit">Masuk</button>
+      </form>
+
+      <p class="foot-switch">Belum punya akun? <button onclick="switchView('register')">Daftar di sini</button></p>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="view" id="registerView">
+      <h1>Buat akun baru</h1>
+      <p class="sub">Isi datamu untuk mulai menjelajah.</p>
+
+      <form onsubmit="return handleRegister(event)">
+        <div class="field" id="regNameField">
+          <label for="regName">Nama lengkap</label>
+          <input type="text" id="regName" placeholder="Nama kamu">
+          <div class="msg"></div>
+        </div>
+        <div class="field" id="regEmailField">
+          <label for="regEmail">Email</label>
+          <input type="email" id="regEmail" placeholder="nama@email.com">
+          <div class="msg"></div>
+        </div>
+        <div class="field" id="regPassField">
+          <label for="regPass">Kata sandi</label>
+          <input type="password" id="regPass" placeholder="Minimal 6 karakter">
+          <div class="msg"></div>
+        </div>
+        <div class="field" id="regConfirmField">
+          <label for="regConfirm">Konfirmasi sandi</label>
+          <input type="password" id="regConfirm" placeholder="Ulangi sandi">
+          <div class="msg"></div>
+        </div>
+
+        <button type="submit" class="submit">Daftar</button>
+      </form>
+
+      <p class="foot-switch">Sudah punya akun? <button onclick="switchView('login')">Masuk di sini</button></p>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard">
+    <div class="db-head">
+      <div class="avatar" id="dbAvatar">?</div>
+      <div>
+        <h1 id="dbName">Pengguna</h1>
+        <p id="dbEmail">—</p>
+      </div>
+    </div>
+
+    <div class="db-cards">
+      <div class="db-card accent"><b>3</b><span>proyek aktif</span></div>
+      <div class="db-card"><b>18</b><span>tugas selesai</span></div>
+      <div class="db-card"><b>92%</b><span>progres minggu ini</span></div>
+      <div class="db-card"><b>5</b><span>pesan baru</span></div>
+    </div>
+
+    <button class="logout" onclick="handleLogout()">Keluar</button>
+  </div>
+
+</div>
+
+<script>
+  function switchView(name){
+    document.getElementById('loginView').classList.toggle('active', name === 'login');
+    document.getElementById('registerView').classList.toggle('active', name === 'register');
+    document.getElementById('tabLogin').classList.toggle('active', name === 'login');
+    document.getElementById('tabRegister').classList.toggle('active', name === 'register');
+  }
+
+  function setError(fieldId, message){
+    const field = document.getElementById(fieldId);
+    field.classList.toggle('error', !!message);
+    field.querySelector('.msg').textContent = message || '';
+  }
+
+  function handleLogin(e){
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPass').value;
+
+    let ok = true;
+    if(!email || !email.includes('@')){ setError('loginEmailField', 'Masukkan email yang valid.'); ok = false; }
+    else setError('loginEmailField', '');
+
+    if(!pass || pass.length < 6){ setError('loginPassField', 'Kata sandi minimal 6 karakter.'); ok = false; }
+    else setError('loginPassField', '');
+
+    if(!ok) return false;
+
+    enterDashboard(email.split('@')[0], email);
+    return false;
+  }
+
+  function handleRegister(e){
+    e.preventDefault();
+    const name = document.getElementById('regName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const pass = document.getElementById('regPass').value;
+    const confirm = document.getElementById('regConfirm').value;
+
+    let ok = true;
+    if(!name){ setError('regNameField', 'Nama tidak boleh kosong.'); ok = false; }
+    else setError('regNameField', '');
+
+    if(!email || !email.includes('@')){ setError('regEmailField', 'Masukkan email yang valid.'); ok = false; }
+    else setError('regEmailField', '');
+
+    if(!pass || pass.length < 6){ setError('regPassField', 'Kata sandi minimal 6 karakter.'); ok = false; }
+    else setError('regPassField', '');
+
+    if(confirm !== pass || !confirm){ setError('regConfirmField', 'Konfirmasi sandi tidak cocok.'); ok = false; }
+    else setError('regConfirmField', '');
+
+    if(!ok) return false;
+
+    enterDashboard(name, email);
+    return false;
+  }
+
+  function enterDashboard(name, email){
+    document.getElementById('authPanel').style.display = 'none';
+    document.getElementById('dashboard').classList.add('active');
+
+    document.getElementById('dbName').textContent = name.charAt(0).toUpperCase() + name.slice(1);
+    document.getElementById('dbEmail').textContent = email;
+    document.getElementById('dbAvatar').textContent = name.charAt(0).toUpperCase();
+  }
+
+  function handleLogout(){
+    document.getElementById('dashboard').classList.remove('active');
+    document.getElementById('authPanel').style.display = 'block';
+    switchView('login');
+    document.getElementById('loginEmail').value = '';
+    document.getElementById('loginPass').value = '';
+  }
+</script>
+
+</body>
+</html>
